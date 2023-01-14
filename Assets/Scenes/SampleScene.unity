@@ -5409,7 +5409,7 @@ GameObject:
   - component: {fileID: 1061003955734745049}
   m_Layer: 8
   m_Name: Enemy3
-  m_TagString: Enemy
+  m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5426,8 +5426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitPrefab: {fileID: 0}
-  initPlanetOwner: 1
+  initOwner: 1
 --- !u!4 &2141841345913751375
 Transform:
   m_ObjectHideFlags: 0
@@ -5474,8 +5473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitPrefab: {fileID: 0}
-  initPlanetOwner: 2
+  initOwner: 2
 --- !u!23 &2603952911605197529
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5532,7 +5530,7 @@ GameObject:
   - component: {fileID: 2817346236474361562}
   m_Layer: 8
   m_Name: Enemy2
-  m_TagString: Enemy
+  m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5549,8 +5547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitPrefab: {fileID: 0}
-  initPlanetOwner: 1
+  initOwner: 1
 --- !u!33 &2837448049336926982
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5756,8 +5753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitPrefab: {fileID: 8653046953470627433, guid: 85bf146346373d945b03eae8071a2be3, type: 3}
-  initPlanetOwner: 0
+  initOwner: 0
 --- !u!33 &8652961811606955634
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5781,7 +5777,7 @@ GameObject:
   - component: {fileID: 8677561691876533166}
   m_Layer: 8
   m_Name: Enemy1
-  m_TagString: Enemy
+  m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5798,8 +5794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitPrefab: {fileID: 0}
-  initPlanetOwner: 1
+  initOwner: 1
 --- !u!4 &8963689110835011452
 Transform:
   m_ObjectHideFlags: 0

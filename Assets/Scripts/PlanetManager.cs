@@ -5,10 +5,9 @@ using UnityEngine;
 
 public class PlanetManager : MonoBehaviour
 {
-    public GameObject unitPrefab;
-    public Fraction initPlanetOwner;
+    public Fraction initOwner;
 
-    public Fraction planetOwner { get; private set; }
+    public Fraction owner { get; private set; }
 
     private int controlPoints = 100;
     private List<GameObject> units = new List<GameObject>();
@@ -18,11 +17,7 @@ public class PlanetManager : MonoBehaviour
 
     void Start()
     {
-        SetOwner(initPlanetOwner);
-        if (gameObject != null && unitPrefab != null)
-        {
-            InvokeRepeating("ProduceUnit", 0f, secondsToProduceUnit);
-        }
+        SetOwner(initOwner);
     }
 
     void Update()
@@ -43,8 +38,9 @@ public class PlanetManager : MonoBehaviour
 
     void ProduceUnit()
     {
-        GameObject newUnit = Instantiate(unitPrefab, transform.position, Quaternion.identity) as GameObject;
+        GameObject newUnit = Instantiate(Resources.Load<GameObject>("Prefabs/Unit"), transform.position, Quaternion.identity) as GameObject;
         newUnit.AddComponent<UnitManager>().planet = gameObject;
+        newUnit.AddComponent<UnitManager>().SetOwner(owner);
         units.Add(newUnit);
         PlaceUnits();
     }
@@ -90,8 +86,14 @@ public class PlanetManager : MonoBehaviour
 
     private void SetOwner(Fraction owner)
     {
-        planetOwner = owner;
+        this.owner = owner;
         gameObject.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/" + owner.ToString());
+
+        CancelInvoke("ProduceUnit");
+        if (owner == Fraction.PLAYER)
+        {
+            InvokeRepeating("ProduceUnit", 1f, secondsToProduceUnit);
+        }
     }
 
     private void SetUnitsState(UnitState unitState)

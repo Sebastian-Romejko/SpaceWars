@@ -7,7 +7,7 @@ public class UnitManager : MonoBehaviour
 {
     public GameObject planet { get; set; }
     public UnitState state { get; private set; } = UnitState.ORBITING;
-    public Fraction owner { get; set; }
+    public Fraction owner { get; private set; }
 
 
     private GameObject targetPlanet;
@@ -18,11 +18,21 @@ public class UnitManager : MonoBehaviour
         if (targetPlanet != null && state == UnitState.MOVING)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPlanet.transform.position, 10f * Time.deltaTime);
+
             if (Vector3.Distance(transform.position, targetPlanet.transform.position) <= 7f)
             {
                 targetPlanet.GetComponent<PlanetManager>().AddUnit(gameObject);
-                state = UnitState.ATTACKING;
-                InvokeRepeating("TakeControl", 0f, 1);
+
+                if (targetPlanet.GetComponent<PlanetManager>().owner == owner)
+                {
+                    SetState(UnitState.ORBITING);
+                }
+                else
+                {
+                    SetState(UnitState.ATTACKING);
+                    InvokeRepeating("TakeControl", 0f, 1);
+
+                }
             }
         }
     }
@@ -30,6 +40,12 @@ public class UnitManager : MonoBehaviour
     private void TakeControl()
     {
         targetPlanet.GetComponent<PlanetManager>().TakeControl(owner, attackPoints);
+    }
+
+    public void SetOwner(Fraction owner)
+    {
+        this.owner = owner;
+        gameObject.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/" + owner.ToString());
     }
 
     public void MoveTo(GameObject planetToMove)
@@ -42,6 +58,5 @@ public class UnitManager : MonoBehaviour
     {
         state = newState;
         CancelInvoke("TakeControl");
-
     }
 }

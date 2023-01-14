@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Screen.autorotateToLandscapeLeft = true;
+        Screen.autorotateToLandscapeRight = true;
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
     }
 
     void Update()
@@ -39,13 +42,15 @@ public class GameManager : MonoBehaviour
 
     void MoveUnits(GameObject clickedPlanet)
     {
-        if (clickedPlanet.GetComponent<PlanetManager>().planetOwner != Fraction.PLAYER && selectedPlanet != null)
-        {
-            selectedPlanet.GetComponent<PlanetManager>().MoveUnits(clickedPlanet);
-        }
-        else if (clickedPlanet.GetComponent<PlanetManager>().planetOwner == Fraction.PLAYER)
+        if (clickedPlanet.GetComponent<PlanetManager>().owner == Fraction.PLAYER)
         {
             selectedPlanet = clickedPlanet;
+        }
+
+        if (selectedPlanet != null)
+        {
+            selectedPlanet.GetComponent<PlanetManager>().MoveUnits(clickedPlanet);
+            
         }
     }
 }
