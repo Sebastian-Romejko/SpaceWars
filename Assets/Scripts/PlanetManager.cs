@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlanetManager : MonoBehaviour
 {
-    public Fraction initOwner;
+    public Fraction initOwner = Fraction.NEUTRAL;
 
     public Fraction owner { get; private set; }
 
@@ -17,7 +17,12 @@ public class PlanetManager : MonoBehaviour
 
     void Start()
     {
-        SetOwner(initOwner);
+    }
+
+    public void Init(Fraction owner, int secondsToProduceUnit)
+    {
+        this.secondsToProduceUnit = secondsToProduceUnit;
+        SetOwner(owner);
     }
 
     void Update()
@@ -86,11 +91,12 @@ public class PlanetManager : MonoBehaviour
 
     private void SetOwner(Fraction owner)
     {
+        Debug.Log("Setting owner: " + owner);
         this.owner = owner;
         gameObject.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/" + owner.ToString());
 
         CancelInvoke("ProduceUnit");
-        if (owner == Fraction.PLAYER)
+        if (owner != Fraction.NEUTRAL)
         {
             InvokeRepeating("ProduceUnit", 1f, secondsToProduceUnit);
         }

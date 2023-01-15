@@ -9,9 +9,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        Screen.autorotateToLandscapeLeft = true;
-        Screen.autorotateToLandscapeRight = true;
-        Screen.orientation = ScreenOrientation.LandscapeLeft;
+        MapFactory.renderMap(gameObject, 10, DifficultyLevel.NORMAL);
     }
 
     void Update()

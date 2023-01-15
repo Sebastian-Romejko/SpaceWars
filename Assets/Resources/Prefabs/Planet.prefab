@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6394060293196614532}
   m_Layer: 8
   m_Name: Planet
-  m_TagString: Enemy
+  m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -108,5 +108,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitPrefab: {fileID: 0}
-  initPlanetOwner: 2
+  initOwner: 2
