@@ -91,7 +91,6 @@ public class PlanetManager : MonoBehaviour
 
     private void SetOwner(Fraction owner)
     {
-        Debug.Log("Setting owner: " + owner);
         this.owner = owner;
         gameObject.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/" + owner.ToString());
 
