@@ -12,6 +12,7 @@ public class PlanetManager : MonoBehaviour
     private int controlPoints = 100;
     private List<GameObject> units = new List<GameObject>();
     private int secondsToProduceUnit = 5;
+    private int unitsHP = 10;
     private float radius = 7f;
     private float rotationSpeed = 90f;
 
@@ -19,9 +20,10 @@ public class PlanetManager : MonoBehaviour
     {
     }
 
-    public void Init(Fraction owner, int secondsToProduceUnit)
+    public void Init(Fraction owner, int secondsToProduceUnit, int unitsHP)
     {
         this.secondsToProduceUnit = secondsToProduceUnit;
+        this.unitsHP = unitsHP;
         SetOwner(owner);
     }
 
@@ -45,6 +47,7 @@ public class PlanetManager : MonoBehaviour
     {
         GameObject newUnit = Instantiate(Resources.Load<GameObject>("Prefabs/Unit"), transform.position, Quaternion.identity) as GameObject;
         newUnit.AddComponent<UnitManager>().planet = gameObject;
+        newUnit.AddComponent<UnitManager>().SetHealthPoints(unitsHP);
         newUnit.AddComponent<UnitManager>().SetOwner(owner);
         units.Add(newUnit);
         PlaceUnits();

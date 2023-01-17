@@ -11,6 +11,7 @@ public class UnitManager : MonoBehaviour
 
 
     private GameObject targetPlanet;
+    private int healthPoints;
     private int attackPoints = 1;
 
     private void Update()
@@ -46,6 +47,23 @@ public class UnitManager : MonoBehaviour
     {
         this.owner = owner;
         gameObject.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/" + owner.ToString());
+    }
+
+    public void SetHealthPoints(int hp)
+    {
+        if (healthPoints == 0)
+        {
+            healthPoints = hp;
+        }
+    }
+
+    public void DealDamage(int damage)
+    {
+        healthPoints -= damage;
+        if(healthPoints <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void MoveTo(GameObject planetToMove)

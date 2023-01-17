@@ -13,10 +13,10 @@ public class MapFactory : MonoBehaviour
     private static Dictionary<DifficultyLevel, DifficultyLevelConfiguration> difficultyLevelConfiguration =
         new Dictionary<DifficultyLevel, DifficultyLevelConfiguration>()
         { 
-            { DifficultyLevel.EASY, new DifficultyLevelConfiguration(40, 10) },
-            { DifficultyLevel.NORMAL, new DifficultyLevelConfiguration(50, 8) },
-            { DifficultyLevel.HARD, new DifficultyLevelConfiguration(60, 5) },
-            { DifficultyLevel.HARDCORE, new DifficultyLevelConfiguration(70, 5) }
+            { DifficultyLevel.EASY, new DifficultyLevelConfiguration(40, 10, 8) },
+            { DifficultyLevel.NORMAL, new DifficultyLevelConfiguration(50, 8, 10) },
+            { DifficultyLevel.HARD, new DifficultyLevelConfiguration(60, 5, 10) },
+            { DifficultyLevel.HARDCORE, new DifficultyLevelConfiguration(70, 5, 12) }
         };
 
     private MapFactory()
@@ -69,13 +69,13 @@ public class MapFactory : MonoBehaviour
         DifficultyLevelConfiguration difficulty = difficultyLevelConfiguration[difficultyLevel];
         int numerOfEnemyPlanets = Convert.ToInt32(difficulty.percentOfEnemyPlanets);
         List<int> selectedPlanets = new List<int>(Enumerable.Range(1, 50).OrderBy(x => new System.Random().Next()).Take(5));
-        selectedPlanets.ForEach(number => planets[number].GetComponent<PlanetManager>().Init(Fraction.ENEMY, difficulty.secondsToProduceUnit));
+        selectedPlanets.ForEach(number => planets[number].GetComponent<PlanetManager>().Init(Fraction.ENEMY, difficulty.secondsToProduceUnit, difficulty.unitsHP));
     }
 
     private static void setPlayerPlanet()
     {
         GameObject selectedPlanet = planets.Where(planet => planet.GetComponent<PlanetManager>().owner != Fraction.ENEMY).FirstOrDefault();
-        selectedPlanet.GetComponent<PlanetManager>().Init(Fraction.PLAYER, 5);
+        selectedPlanet.GetComponent<PlanetManager>().Init(Fraction.PLAYER, 5, 10);
         GameObject.Find("Main Camera").transform.position = new Vector3(
             selectedPlanet.transform.position.x,
             selectedPlanet.transform.position.y + 100,
