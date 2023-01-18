@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Planet
   - Enemy
+  - Unit
   layers:
   - Default
   - TransparentFX

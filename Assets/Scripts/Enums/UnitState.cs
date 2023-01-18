@@ -10,6 +10,7 @@ namespace Assets.Scripts.Enums
     {
         ORBITING,
         MOVING,
-        ATTACKING
+        ATTACKING,
+        FIGHTING
     }
 }

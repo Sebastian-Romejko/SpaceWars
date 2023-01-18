@@ -45,10 +45,10 @@ public class PlanetManager : MonoBehaviour
 
     void ProduceUnit()
     {
-        GameObject newUnit = Instantiate(Resources.Load<GameObject>("Prefabs/Unit"), transform.position, Quaternion.identity) as GameObject;
-        newUnit.AddComponent<UnitManager>().planet = gameObject;
-        newUnit.AddComponent<UnitManager>().SetHealthPoints(unitsHP);
-        newUnit.AddComponent<UnitManager>().SetOwner(owner);
+        GameObject newUnit = Instantiate(Resources.Load<GameObject>("Prefabs/Unit"), transform.position, Quaternion.identity);
+        newUnit.GetComponent<UnitManager>().planet = gameObject;
+        newUnit.GetComponent<UnitManager>().SetHealthPoints(unitsHP);
+        newUnit.GetComponent<UnitManager>().SetOwner(owner);
         units.Add(newUnit);
         PlaceUnits();
     }
@@ -74,6 +74,11 @@ public class PlanetManager : MonoBehaviour
         units.Add(unitToAdd);
     }
 
+    public void RemoveUnit(GameObject unitToRemove)
+    {
+        units.Remove(unitToRemove);
+    }
+
     public void MoveUnits(GameObject planetToMove)
     {
         SetUnitsState(UnitState.MOVING);
@@ -81,7 +86,8 @@ public class PlanetManager : MonoBehaviour
         units = new List<GameObject>();
     }
 
-    public void TakeControl(Fraction fraction, int controlPoints)
+    public void TakeDamage
+        (Fraction fraction, int controlPoints)
     {
         this.controlPoints -= controlPoints;
         if(this.controlPoints == 0)
