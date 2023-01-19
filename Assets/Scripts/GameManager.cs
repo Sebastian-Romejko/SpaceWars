@@ -45,10 +45,9 @@ public class GameManager : MonoBehaviour
             selectedPlanet = clickedPlanet;
         }
 
-        if (selectedPlanet != null)
+        if (selectedPlanet != null && selectedPlanet != clickedPlanet)
         {
             selectedPlanet.GetComponent<PlanetManager>().MoveUnits(clickedPlanet);
-            
         }
     }
 }

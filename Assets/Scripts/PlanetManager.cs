@@ -5,9 +5,7 @@ using UnityEngine;
 
 public class PlanetManager : MonoBehaviour
 {
-    public Fraction initOwner = Fraction.NEUTRAL;
-
-    public Fraction owner { get; private set; }
+    public Fraction owner { get; private set; } = Fraction.NEUTRAL;
 
     private int controlPoints = 100;
     private List<GameObject> units = new List<GameObject>();
@@ -39,7 +37,7 @@ public class PlanetManager : MonoBehaviour
             float zPos = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
             Vector3 newPos = new Vector3(xPos, 0, zPos);
 
-            unit.transform.position = gameObject.transform.position + newPos;
+            unit.transform.position = Vector3.MoveTowards(unit.transform.position, gameObject.transform.position + newPos, 10 * Time.deltaTime);
         });
     }
 
@@ -50,23 +48,6 @@ public class PlanetManager : MonoBehaviour
         newUnit.GetComponent<UnitManager>().SetHealthPoints(unitsHP);
         newUnit.GetComponent<UnitManager>().SetOwner(owner);
         units.Add(newUnit);
-        PlaceUnits();
-    }
-
-    void PlaceUnits()
-    {
-        float angleBetweenObjects = 360.0f / units.Count;
-        int unitsCounter = 1;
-
-        units.ForEach(unit =>
-        {
-            float angle = angleBetweenObjects * unitsCounter++;
-            float xPos = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
-            float zPos = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
-            Vector3 pos = new Vector3(xPos, 0, zPos);
-
-            unit.transform.position = gameObject.transform.position + pos;
-        });
     }
 
     public void AddUnit(GameObject unitToAdd)
