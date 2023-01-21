@@ -28,9 +28,9 @@ public class UnitManager : MonoBehaviour
         }
         else if (targetPlanet != null && state == UnitState.MOVING)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPlanet.transform.position, 10 * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPlanet.transform.position, 20 * Time.deltaTime);
 
-            if (Vector3.Distance(transform.position, targetPlanet.transform.position) <= 10)
+            if (Vector3.Distance(transform.position, targetPlanet.transform.position) <= 15)
             {
                 targetPlanet.GetComponent<PlanetManager>().AddUnit(gameObject);
 

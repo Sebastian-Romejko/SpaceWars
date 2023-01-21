@@ -11,7 +11,7 @@ public class PlanetManager : MonoBehaviour
     private List<GameObject> units = new List<GameObject>();
     private int secondsToProduceUnit = 5;
     private int unitsHP = 10;
-    private float radius = 7f;
+    private float radius = 20f;
     private float rotationSpeed = 90f;
 
     void Start()
@@ -36,8 +36,9 @@ public class PlanetManager : MonoBehaviour
             float xPos = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
             float zPos = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
             Vector3 newPos = new Vector3(xPos, 0, zPos);
+            Debug.Log("Vector: " + newPos);
 
-            unit.transform.position = Vector3.MoveTowards(unit.transform.position, gameObject.transform.position + newPos, 10 * Time.deltaTime);
+            unit.transform.position = Vector3.MoveTowards(unit.transform.position, gameObject.transform.position + newPos, 20 * Time.deltaTime);
         });
     }
 

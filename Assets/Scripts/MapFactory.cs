@@ -29,6 +29,7 @@ public class MapFactory : MonoBehaviour
         renderPlanets(plane, numberOfPlanets);
         renderLinesBetweenPlanets();
         setPlanetsOwners(difficultyLevel);
+        //setCameraOnPlayersPlanet();
     }
 
     private static void renderPlanets(GameObject plane, int numberOfPlanets)
@@ -38,13 +39,20 @@ public class MapFactory : MonoBehaviour
             Vector3 randomPos;
             do
             {
-                Vector2 randomCirclePoint = UnityEngine.Random.insideUnitCircle * plane.GetComponent<Renderer>().bounds.size.x / 2;
+                Vector2 randomCirclePoint = UnityEngine.Random.insideUnitCircle * plane.GetComponent<Renderer>().bounds.size.z / 2;
                 randomPos = plane.transform.position + new Vector3(randomCirclePoint.x, plane.transform.position.y, randomCirclePoint.y);
             }
             while(planets.Find(planet => Vector3.Distance(randomPos, planet.transform.position) < 50));
 
             planets.Add(Instantiate(planetPrefab, randomPos, Quaternion.identity));
         }
+    }
+
+    //TODO: remove if not needed
+    private static int randomXModifier(GameObject plane)
+    {
+        System.Random random = new System.Random();
+        return random.Next(-1, 1) * random.Next(0, Convert.ToInt32(plane.GetComponent<Renderer>().bounds.size.x / 4));
     }
 
     private static void renderLinesBetweenPlanets()
@@ -76,10 +84,6 @@ public class MapFactory : MonoBehaviour
     {
         GameObject selectedPlanet = planets.Where(planet => planet.GetComponent<PlanetManager>().owner != Fraction.ENEMY).FirstOrDefault();
         selectedPlanet.GetComponent<PlanetManager>().Init(Fraction.PLAYER, 5, 10);
-        GameObject.Find("Main Camera").transform.position = new Vector3(
-            selectedPlanet.transform.position.x,
-            selectedPlanet.transform.position.y + 100,
-            selectedPlanet.transform.position.z - 20);
     }
 
     private static void renderLineBetweenPlanets(GameObject planet, List<GameObject> planetsToConnect)
@@ -99,10 +103,19 @@ public class MapFactory : MonoBehaviour
         }
     }
 
+    private static void setCameraOnPlayersPlanet()
+    {
+        GameObject playersPlanet = planets.Where(planet => planet.GetComponent<PlanetManager>().owner == Fraction.PLAYER).FirstOrDefault();
+        GameObject.Find("Main Camera").transform.position = new Vector3(
+            playersPlanet.transform.position.x,
+            playersPlanet.transform.position.y + 150,
+            playersPlanet.transform.position.z + 10);
+    }
+
     private static bool isOtherPlanetHit(Vector3 point1, Vector3 point2)
     {
         RaycastHit hit;
-        Physics.Linecast(Vector3.MoveTowards(point1, point2, 10), Vector3.MoveTowards(point2, point1, 10), out hit);
+        Physics.Linecast(Vector3.MoveTowards(point1, point2, 20), Vector3.MoveTowards(point2, point1, 20), out hit);
         return hit.collider != null && hit.collider.gameObject != null;
     }
 }
