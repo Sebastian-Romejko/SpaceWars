@@ -13,10 +13,38 @@ public class MapFactory : MonoBehaviour
     private static Dictionary<DifficultyLevel, DifficultyLevelConfiguration> difficultyLevelConfiguration =
         new Dictionary<DifficultyLevel, DifficultyLevelConfiguration>()
         { 
-            { DifficultyLevel.EASY, new DifficultyLevelConfiguration(40, 10, 8) },
-            { DifficultyLevel.NORMAL, new DifficultyLevelConfiguration(50, 8, 10) },
-            { DifficultyLevel.HARD, new DifficultyLevelConfiguration(60, 5, 10) },
-            { DifficultyLevel.HARDCORE, new DifficultyLevelConfiguration(70, 5, 12) }
+            { DifficultyLevel.EASY, 
+                new DifficultyLevelConfiguration(40, 10, 8, new Dictionary<EnemyStrategy, decimal>() 
+                { 
+                    { EnemyStrategy.PEACEFUL, 60 }, 
+                    { EnemyStrategy.BALANCED, 30 }, 
+                    { EnemyStrategy.AGGRESSIVE, 10 }
+                }) 
+            },
+            { DifficultyLevel.NORMAL, 
+                new DifficultyLevelConfiguration(50, 8, 10, new Dictionary<EnemyStrategy, decimal>()
+                {
+                    { EnemyStrategy.PEACEFUL, 40 },
+                    { EnemyStrategy.BALANCED, 40 },
+                    { EnemyStrategy.AGGRESSIVE, 20 }
+                }) 
+            },
+            { DifficultyLevel.HARD, 
+                new DifficultyLevelConfiguration(60, 5, 10, new Dictionary<EnemyStrategy, decimal>() 
+                { 
+                    { EnemyStrategy.PEACEFUL, 20 }, 
+                    { EnemyStrategy.BALANCED, 50 }, 
+                    { EnemyStrategy.AGGRESSIVE, 30 }
+                }) 
+            },
+            { DifficultyLevel.HARDCORE, 
+                new DifficultyLevelConfiguration(70, 5, 12, new Dictionary<EnemyStrategy, decimal>()
+                {
+                    { EnemyStrategy.PEACEFUL, 0 },
+                    { EnemyStrategy.BALANCED, 50 },
+                    { EnemyStrategy.AGGRESSIVE, 50 }
+                }) 
+            }
         };
 
     private MapFactory()
@@ -29,6 +57,7 @@ public class MapFactory : MonoBehaviour
         renderPlanets(plane, numberOfPlanets);
         renderLinesBetweenPlanets();
         setPlanetsOwners(difficultyLevel);
+        setEnemyPlanetsStrategy(difficultyLevel);
         //setCameraOnPlayersPlanet();
     }
 
@@ -86,6 +115,39 @@ public class MapFactory : MonoBehaviour
         selectedPlanet.GetComponent<PlanetManager>().Init(Fraction.PLAYER, 5, 10);
     }
 
+    private static void setEnemyPlanetsStrategy(DifficultyLevel difficultyLevel)
+    {
+        List<GameObject> enemyPlanets = planets.Where(p => p.GetComponent<PlanetManager>().owner == Fraction.ENEMY).ToList();
+        int peacefulPlanets = Convert.ToInt32(enemyPlanets.Count * difficultyLevelConfiguration[difficultyLevel].enemyStrategyToPresence[EnemyStrategy.PEACEFUL] / 100);
+        int balancedPlanets = Convert.ToInt32(enemyPlanets.Count * difficultyLevelConfiguration[difficultyLevel].enemyStrategyToPresence[EnemyStrategy.BALANCED] / 100);
+        int aggresivePlanets = Convert.ToInt32(enemyPlanets.Count * difficultyLevelConfiguration[difficultyLevel].enemyStrategyToPresence[EnemyStrategy.AGGRESSIVE] / 100);
+        Debug.Log("ENEMY STRATEGIES: " + peacefulPlanets + " | " + balancedPlanets + " | " + aggresivePlanets);
+        foreach (GameObject planet in enemyPlanets) 
+        {
+            if(peacefulPlanets-- > 0)
+            {
+                planet.GetComponent<PlanetManager>().SetStrategy(EnemyStrategy.PEACEFUL);
+            }
+            else if (balancedPlanets-- > 0)
+            {
+                planet.GetComponent<PlanetManager>().SetStrategy(EnemyStrategy.BALANCED);
+            }
+            else if(aggresivePlanets-- > 0)
+            {
+                planet.GetComponent<PlanetManager>().SetStrategy(EnemyStrategy.AGGRESSIVE);
+            }
+        }
+    }
+
+    private static void setCameraOnPlayersPlanet()
+    {
+        GameObject playersPlanet = planets.Where(planet => planet.GetComponent<PlanetManager>().owner == Fraction.PLAYER).FirstOrDefault();
+        GameObject.Find("Main Camera").transform.position = new Vector3(
+            playersPlanet.transform.position.x,
+            playersPlanet.transform.position.y + 150,
+            playersPlanet.transform.position.z + 10);
+    }
+
     private static void renderLineBetweenPlanets(GameObject planet, List<GameObject> planetsToConnect)
     {
         foreach (GameObject planetToConnect in planetsToConnect)
@@ -101,15 +163,6 @@ public class MapFactory : MonoBehaviour
                 lineRenderer.SetPosition(1, planetToConnect.transform.position);
             }
         }
-    }
-
-    private static void setCameraOnPlayersPlanet()
-    {
-        GameObject playersPlanet = planets.Where(planet => planet.GetComponent<PlanetManager>().owner == Fraction.PLAYER).FirstOrDefault();
-        GameObject.Find("Main Camera").transform.position = new Vector3(
-            playersPlanet.transform.position.x,
-            playersPlanet.transform.position.y + 150,
-            playersPlanet.transform.position.z + 10);
     }
 
     private static bool isOtherPlanetHit(Vector3 point1, Vector3 point2)

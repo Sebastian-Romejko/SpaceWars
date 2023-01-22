@@ -7,11 +7,12 @@ public class PlanetManager : MonoBehaviour
 {
     public Fraction owner { get; private set; } = Fraction.NEUTRAL;
 
+    public EnemyStrategy enemyStrategy;
     private int controlPoints = 100;
     private List<GameObject> units = new List<GameObject>();
     private int secondsToProduceUnit = 5;
     private int unitsHP = 10;
-    private float radius = 20f;
+    private float radius = 15f;
     private float rotationSpeed = 90f;
 
     void Start()
@@ -25,6 +26,11 @@ public class PlanetManager : MonoBehaviour
         SetOwner(owner);
     }
 
+    public void SetStrategy(EnemyStrategy enemyStrategy)
+    {
+        this.enemyStrategy = enemyStrategy;
+    }
+
     void Update()
     {
         float angleBetweenObjects = 360.0f / units.Count;
@@ -36,8 +42,8 @@ public class PlanetManager : MonoBehaviour
             float xPos = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
             float zPos = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
             Vector3 newPos = new Vector3(xPos, 0, zPos);
-            Debug.Log("Vector: " + newPos);
 
+            //unit.transform.RotateAround(gameObject.transform.position, new Vector3(0, 20, 0), Time.time * 1);
             unit.transform.position = Vector3.MoveTowards(unit.transform.position, gameObject.transform.position + newPos, 20 * Time.deltaTime);
         });
     }
