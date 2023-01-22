@@ -5338,7 +5338,7 @@ Transform:
   m_GameObject: {fileID: 1898394113}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 137.12811, y: -130, z: -138.93007}
-  m_LocalScale: {x: 30, y: 1, z: 20}
+  m_LocalScale: {x: 30, y: 1, z: 18}
   m_Children: []
   m_Father: {fileID: 319178861}
   m_RootOrder: 0
@@ -5523,7 +5523,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyStrategy: 0
 --- !u!4 &2141841345913751375
 Transform:
   m_ObjectHideFlags: 0
@@ -5570,7 +5569,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyStrategy: 0
 --- !u!23 &2603952911605197529
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5644,7 +5642,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyStrategy: 0
 --- !u!33 &2837448049336926982
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5850,7 +5847,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyStrategy: 0
 --- !u!33 &8652961811606955634
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5891,7 +5887,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fc277d2bd17b0469bae80096ec8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyStrategy: 0
 --- !u!4 &8963689110835011452
 Transform:
   m_ObjectHideFlags: 0

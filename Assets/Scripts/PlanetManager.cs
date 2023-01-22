@@ -1,15 +1,17 @@
 using Assets.Scripts.Enums;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlanetManager : MonoBehaviour
 {
     public Fraction owner { get; private set; } = Fraction.NEUTRAL;
+    public EnemyStrategy enemyStrategy { get; set; }
+    public List<GameObject> connectedPlanets { get; set; } = new List<GameObject>();
 
-    public EnemyStrategy enemyStrategy;
-    private int controlPoints = 100;
     private List<GameObject> units = new List<GameObject>();
+    private int healthPoints = 100;
     private int secondsToProduceUnit = 5;
     private int unitsHP = 10;
     private float radius = 15f;
@@ -25,16 +27,21 @@ public class PlanetManager : MonoBehaviour
         this.unitsHP = unitsHP;
         SetOwner(owner);
     }
-
-    public void SetStrategy(EnemyStrategy enemyStrategy)
+    public void AddConnectedPlanet(GameObject planetToConnect)
     {
-        this.enemyStrategy = enemyStrategy;
+        if(!connectedPlanets.Contains(planetToConnect))
+        {
+            connectedPlanets.Add(planetToConnect);
+        }
     }
 
     void Update()
     {
         float angleBetweenObjects = 360.0f / units.Count;
         int unitsCounter = 1;
+
+        // TODO: find out why it is needed (some units aren't removed from units list when they should)
+        units.RemoveAll(unit => unit == null);
 
         units.FindAll(unit => unit.GetComponent<UnitManager>().state == UnitState.ORBITING).ForEach(unit =>
         {
@@ -57,6 +64,11 @@ public class PlanetManager : MonoBehaviour
         units.Add(newUnit);
     }
 
+    public int GetUnitsCount()
+    {
+        return units.Count;
+    }
+
     public void AddUnit(GameObject unitToAdd)
     {
         units.Add(unitToAdd);
@@ -70,18 +82,22 @@ public class PlanetManager : MonoBehaviour
     public void MoveUnits(GameObject planetToMove)
     {
         SetUnitsState(UnitState.MOVING);
-        units.ForEach(unit => unit.GetComponent<UnitManager>().MoveTo(planetToMove));
+        Debug.Log("-----------------------");
+        units.ForEach(unit => Debug.Log("OWNER: " + unit.GetComponent<UnitManager>().owner));
+        Debug.Log("-----------------------");
+        units.Where(unit => unit.GetComponent<UnitManager>().owner == owner).ToList()
+            .ForEach(unit => unit.GetComponent<UnitManager>().MoveTo(planetToMove));
         units = new List<GameObject>();
     }
 
     public void TakeDamage
         (Fraction fraction, int controlPoints)
     {
-        this.controlPoints -= controlPoints;
-        if(this.controlPoints == 0)
+        this.healthPoints -= controlPoints;
+        if(this.healthPoints == 0)
         {
             SetOwner(fraction);
-            this.controlPoints = 100;
+            this.healthPoints = 100;
             SetUnitsState(UnitState.ORBITING);
         }
     }
@@ -92,6 +108,23 @@ public class PlanetManager : MonoBehaviour
         gameObject.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/" + owner.ToString());
 
         CancelInvoke("ProduceUnit");
+        if (gameObject.GetComponent<EnemyAI>() != null)
+        {
+            Destroy(gameObject.GetComponent<EnemyAI>());
+        }
+
+        switch (owner)
+        {
+            case Fraction.PLAYER:
+                InvokeRepeating("ProduceUnit", 1f, secondsToProduceUnit);
+                return;
+            case Fraction.ENEMY:
+                gameObject.AddComponent<EnemyAI>();
+                InvokeRepeating("ProduceUnit", 1f, secondsToProduceUnit);
+                return;
+            case Fraction.NEUTRAL:
+                return;
+        }
         if (owner != Fraction.NEUTRAL)
         {
             InvokeRepeating("ProduceUnit", 1f, secondsToProduceUnit);

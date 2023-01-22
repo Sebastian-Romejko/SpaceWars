@@ -40,7 +40,6 @@ public class GameManager : MonoBehaviour
 
     void MoveUnits(GameObject clickedPlanet)
     {
-        Debug.Log("Planet strategy: " + clickedPlanet.GetComponent<PlanetManager>().enemyStrategy);
         if (clickedPlanet.GetComponent<PlanetManager>().owner == Fraction.PLAYER)
         {
             selectedPlanet = clickedPlanet;

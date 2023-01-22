@@ -14,7 +14,7 @@ public class MapFactory : MonoBehaviour
         new Dictionary<DifficultyLevel, DifficultyLevelConfiguration>()
         { 
             { DifficultyLevel.EASY, 
-                new DifficultyLevelConfiguration(40, 10, 8, new Dictionary<EnemyStrategy, decimal>() 
+                new DifficultyLevelConfiguration(20, 10, 8, new Dictionary<EnemyStrategy, decimal>() 
                 { 
                     { EnemyStrategy.PEACEFUL, 60 }, 
                     { EnemyStrategy.BALANCED, 30 }, 
@@ -22,7 +22,7 @@ public class MapFactory : MonoBehaviour
                 }) 
             },
             { DifficultyLevel.NORMAL, 
-                new DifficultyLevelConfiguration(50, 8, 10, new Dictionary<EnemyStrategy, decimal>()
+                new DifficultyLevelConfiguration(30, 8, 10, new Dictionary<EnemyStrategy, decimal>()
                 {
                     { EnemyStrategy.PEACEFUL, 40 },
                     { EnemyStrategy.BALANCED, 40 },
@@ -30,7 +30,7 @@ public class MapFactory : MonoBehaviour
                 }) 
             },
             { DifficultyLevel.HARD, 
-                new DifficultyLevelConfiguration(60, 5, 10, new Dictionary<EnemyStrategy, decimal>() 
+                new DifficultyLevelConfiguration(40, 5, 10, new Dictionary<EnemyStrategy, decimal>() 
                 { 
                     { EnemyStrategy.PEACEFUL, 20 }, 
                     { EnemyStrategy.BALANCED, 50 }, 
@@ -38,7 +38,7 @@ public class MapFactory : MonoBehaviour
                 }) 
             },
             { DifficultyLevel.HARDCORE, 
-                new DifficultyLevelConfiguration(70, 5, 12, new Dictionary<EnemyStrategy, decimal>()
+                new DifficultyLevelConfiguration(50, 5, 12, new Dictionary<EnemyStrategy, decimal>()
                 {
                     { EnemyStrategy.PEACEFUL, 0 },
                     { EnemyStrategy.BALANCED, 50 },
@@ -71,7 +71,7 @@ public class MapFactory : MonoBehaviour
                 Vector2 randomCirclePoint = UnityEngine.Random.insideUnitCircle * plane.GetComponent<Renderer>().bounds.size.z / 2;
                 randomPos = plane.transform.position + new Vector3(randomCirclePoint.x, plane.transform.position.y, randomCirclePoint.y);
             }
-            while(planets.Find(planet => Vector3.Distance(randomPos, planet.transform.position) < 50));
+            while(planets.Find(planet => Vector3.Distance(randomPos, planet.transform.position) < 40));
 
             planets.Add(Instantiate(planetPrefab, randomPos, Quaternion.identity));
         }
@@ -104,9 +104,13 @@ public class MapFactory : MonoBehaviour
     private static void setEnemyPlanets(DifficultyLevel difficultyLevel)
     {
         DifficultyLevelConfiguration difficulty = difficultyLevelConfiguration[difficultyLevel];
-        int numerOfEnemyPlanets = Convert.ToInt32(difficulty.percentOfEnemyPlanets);
-        List<int> selectedPlanets = new List<int>(Enumerable.Range(1, 50).OrderBy(x => new System.Random().Next()).Take(5));
-        selectedPlanets.ForEach(number => planets[number].GetComponent<PlanetManager>().Init(Fraction.ENEMY, difficulty.secondsToProduceUnit, difficulty.unitsHP));
+        int numerOfEnemyPlanets = Convert.ToInt32(planets.Count * difficulty.percentOfEnemyPlanets / 100);
+        List<int> selectedPlanetsNumbers = new List<int>(Enumerable.Range(1, 50).OrderBy(x => new System.Random().Next()).Take(numerOfEnemyPlanets));
+        selectedPlanetsNumbers.ForEach(number => 
+        {
+            planets[number].GetComponent<PlanetManager>().Init(Fraction.ENEMY, difficulty.secondsToProduceUnit, difficulty.unitsHP);
+            planets[number].AddComponent<EnemyAI>();
+        });
     }
 
     private static void setPlayerPlanet()
@@ -121,20 +125,24 @@ public class MapFactory : MonoBehaviour
         int peacefulPlanets = Convert.ToInt32(enemyPlanets.Count * difficultyLevelConfiguration[difficultyLevel].enemyStrategyToPresence[EnemyStrategy.PEACEFUL] / 100);
         int balancedPlanets = Convert.ToInt32(enemyPlanets.Count * difficultyLevelConfiguration[difficultyLevel].enemyStrategyToPresence[EnemyStrategy.BALANCED] / 100);
         int aggresivePlanets = Convert.ToInt32(enemyPlanets.Count * difficultyLevelConfiguration[difficultyLevel].enemyStrategyToPresence[EnemyStrategy.AGGRESSIVE] / 100);
-        Debug.Log("ENEMY STRATEGIES: " + peacefulPlanets + " | " + balancedPlanets + " | " + aggresivePlanets);
         foreach (GameObject planet in enemyPlanets) 
         {
-            if(peacefulPlanets-- > 0)
+            if (planet.GetComponent<EnemyAI>() != null)
             {
-                planet.GetComponent<PlanetManager>().SetStrategy(EnemyStrategy.PEACEFUL);
+                Destroy(planet.GetComponent<EnemyAI>());
+            }
+
+            if (peacefulPlanets-- > 0)
+            {
+                planet.GetComponent<PlanetManager>().enemyStrategy = EnemyStrategy.PEACEFUL;
             }
             else if (balancedPlanets-- > 0)
             {
-                planet.GetComponent<PlanetManager>().SetStrategy(EnemyStrategy.BALANCED);
+                planet.GetComponent<PlanetManager>().enemyStrategy = EnemyStrategy.BALANCED;
             }
             else if(aggresivePlanets-- > 0)
             {
-                planet.GetComponent<PlanetManager>().SetStrategy(EnemyStrategy.AGGRESSIVE);
+                planet.GetComponent<PlanetManager>().enemyStrategy = EnemyStrategy.AGGRESSIVE;
             }
         }
     }
@@ -161,6 +169,9 @@ public class MapFactory : MonoBehaviour
                 lineRenderer.positionCount = 2;
                 lineRenderer.SetPosition(0, planet.transform.position);
                 lineRenderer.SetPosition(1, planetToConnect.transform.position);
+
+                planet.GetComponent<PlanetManager>().AddConnectedPlanet(planetToConnect);
+                planetToConnect.GetComponent<PlanetManager>().AddConnectedPlanet(planet);
             }
         }
     }

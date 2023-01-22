@@ -8,8 +8,9 @@ namespace Assets.Scripts.Enums
 {
     public enum EnemyStrategy
     {
-        PEACEFUL,
-        BALANCED,
-        AGGRESSIVE
+        NONE = 0,
+        BALANCED = 1,
+        PEACEFUL = 2,
+        AGGRESSIVE = 3
     }
 }
