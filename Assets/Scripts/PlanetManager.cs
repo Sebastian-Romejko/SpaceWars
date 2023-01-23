@@ -82,9 +82,6 @@ public class PlanetManager : MonoBehaviour
     public void MoveUnits(GameObject planetToMove)
     {
         SetUnitsState(UnitState.MOVING);
-        Debug.Log("-----------------------");
-        units.ForEach(unit => Debug.Log("OWNER: " + unit.GetComponent<UnitManager>().owner));
-        Debug.Log("-----------------------");
         units.Where(unit => unit.GetComponent<UnitManager>().owner == owner).ToList()
             .ForEach(unit => unit.GetComponent<UnitManager>().MoveTo(planetToMove));
         units = new List<GameObject>();

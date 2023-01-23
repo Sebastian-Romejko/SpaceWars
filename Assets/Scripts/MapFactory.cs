@@ -65,13 +65,14 @@ public class MapFactory : MonoBehaviour
     {
         for (int i = 0; i < numberOfPlanets; i++)
         {
+            int attempts = 0;
             Vector3 randomPos;
             do
             {
                 Vector2 randomCirclePoint = UnityEngine.Random.insideUnitCircle * plane.GetComponent<Renderer>().bounds.size.z / 2;
                 randomPos = plane.transform.position + new Vector3(randomCirclePoint.x, plane.transform.position.y, randomCirclePoint.y);
             }
-            while(planets.Find(planet => Vector3.Distance(randomPos, planet.transform.position) < 40));
+            while(planets.Find(planet => Vector3.Distance(randomPos, planet.transform.position) < 35) && attempts++ < 999);
 
             planets.Add(Instantiate(planetPrefab, randomPos, Quaternion.identity));
         }

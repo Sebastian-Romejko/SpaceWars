@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private GameObject selectedPlanet;
+    private GameObject fromPlanet;
 
     void Start()
     {
@@ -18,36 +18,50 @@ public class GameManager : MonoBehaviour
         {
             Touch touch = Input.GetTouch(0);
 
-            if (touch.phase == TouchPhase.Ended && touch.tapCount == 1)
+            if (touch.phase == TouchPhase.Began && touch.tapCount == 1)
             {
-                Vector2 touchPos = touch.position;
+                Vector2 dragStaringPosition = touch.position;
 
-                Ray ray = Camera.main.ScreenPointToRay(touchPos);
+                Ray from = Camera.main.ScreenPointToRay(dragStaringPosition);
 
                 RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
+                if (Physics.Raycast(from, out hit))
                 {
-                    GameObject touchedObject = hit.collider.gameObject;
+                    GameObject hitPlanet = hit.collider.gameObject;
 
-                    if (touchedObject.tag == "Planet")
+                    if (hitPlanet.tag == "Planet" && hitPlanet.GetComponent<PlanetManager>().owner == Fraction.PLAYER)
                     {
-                        MoveUnits(touchedObject);
+                        fromPlanet = hitPlanet;
+                    }
+                }
+            }
+
+            if (touch.phase == TouchPhase.Ended && touch.tapCount == 1)
+            {
+                Vector2 dragEndingPosition = touch.position;
+
+                Ray to = Camera.main.ScreenPointToRay(dragEndingPosition);
+
+                RaycastHit hit;
+                if (Physics.Raycast(to, out hit))
+                {
+                    GameObject hitPlanet = hit.collider.gameObject;
+
+                    if (hitPlanet.tag == "Planet")
+                    {
+                        MoveUnits(hitPlanet);
                     }
                 }
             }
         }
     }
 
-    void MoveUnits(GameObject clickedPlanet)
+    void MoveUnits(GameObject toPlanet)
     {
-        if (clickedPlanet.GetComponent<PlanetManager>().owner == Fraction.PLAYER)
+        if (fromPlanet != null && fromPlanet != toPlanet)
         {
-            selectedPlanet = clickedPlanet;
-        }
-
-        if (selectedPlanet != null && selectedPlanet != clickedPlanet)
-        {
-            selectedPlanet.GetComponent<PlanetManager>().MoveUnits(clickedPlanet);
+            fromPlanet.GetComponent<PlanetManager>().MoveUnits(toPlanet);
+            fromPlanet = null;
         }
     }
 }
